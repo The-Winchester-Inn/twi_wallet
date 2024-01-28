@@ -64,6 +64,10 @@ local allowedWalletItems = {
     "np10000",
 }
 
+exports.vorp_inventory:registerUsableItem("wallet", function(source)
+    TriggerClientEvent("vorp_inventory:openInventory", source, "wallet_inventory_" .. tostring(source))
+end)
+
 RegisterServerEvent("myWallet:AddItem")
 AddEventHandler("myWallet:AddItem", function(itemName, amount)
     if not IsAmountValid(amount) then
@@ -83,13 +87,13 @@ AddEventHandler("myWallet:RemoveItem", function(itemName)
     exports.vorp_inventory:subItem(source, "wallet_inventory_" .. tostring(source), itemName, 1)
 end)
 
-local walletInventoryId = "wallet_inventory_" .. tostring(source)
-exports.vorp_inventory:isCustomInventoryRegistered(walletInventoryId, function(registered)
+exports.vorp_inventory:isCustomInventoryRegistered("wallet_inventory_" .. tostring(source), function(registered)
+    local walletInventoryId = "wallet_inventory_" .. tostring(source)  -- Move inside the function
     if not registered then
         local walletInventoryData = {
             id = walletInventoryId,
             name = "Wallet",
-            limit = 1000, 
+            limit = 1000,
             acceptWeapons = false,
             shared = false,
             ignoreItemStackLimit = false,
@@ -114,3 +118,4 @@ function IsItemAllowed(itemName)
     end
     return false
 end
+
